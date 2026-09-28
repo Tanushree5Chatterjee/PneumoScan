@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PneumoScan</title>
+</head>
+<body>
+  <h1>Pneumonia Detection</h1>
+
+  <input type="file" id="fileInput" accept="image/*">
+  <button id="analyzeBtn">Analyze</button>
+
+  <p id="result"></p>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const result = document.getElementById('result');
+
+    analyzeBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        result.textContent = 'Please choose an image first.';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      result.textContent = 'Analyzing...';
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+        result.textContent = 'Result: ' + data.label + ' (score: ' + data.raw_score + ')';
+      } catch (error) {
+        result.textContent = 'Could not reach the backend.';
+      }
+    });
+  </script>
+</body>
+</html>
