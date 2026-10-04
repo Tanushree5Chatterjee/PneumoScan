@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 CORS(app)
 IMG_SIZE = 150
-MODEL_PATH = 'model/pneumonia_model.h5'
+MODEL_PATH = 'model/pneumonia_model1.h5'
 model = None
 
 @app.route('/')
@@ -33,9 +33,13 @@ def predict():
     img = img.reshape(1, IMG_SIZE, IMG_SIZE, 1)
 
     prediction = model.predict(img)[0][0]
-    label = 'NORMAL' if prediction > 0.5 else 'PNEUMONIA'
+    label = 'NORMAL' if prediction > 0.35 else 'PNEUMONIA'
+    confidence = prediction if label == 'NORMAL' else 1 - prediction
 
-    return jsonify({'label': label, 'raw_score': float(prediction)})
+    return jsonify({
+        'label': label,
+        'confidence': round(float(confidence) * 100, 2)
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
