@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 CORS(app)
 IMG_SIZE = 150
-MODEL_PATH = 'model/pneumonia_model1.h5'
+MODEL_PATH = 'model/improved_pneumonia_model.h5'
 model = None
 
 @app.route('/')
